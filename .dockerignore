@@ -1,0 +1,11 @@
+.gradle
+build
+.idea
+out
+*.iml
+*.log
+*.md
+*.yml
+*.env
+Dockerfile
+
