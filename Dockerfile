@@ -16,7 +16,10 @@ FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 # Copiar el JAR generado desde la etapa anterior
-COPY --from=build /app/build/libs/*.jar app.jar
+#COPY --from=build /app/build/libs/*.jar app.jar
+
+COPY --from=build /app/build/libs/measure-backend-0.0.1-SNAPSHOT.jar app.jar
+
 
 # Puerto expuesto (Railway detecta automáticamente, pero puedes incluirlo)
 EXPOSE 8080
