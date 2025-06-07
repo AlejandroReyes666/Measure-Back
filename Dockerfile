@@ -1,28 +1,17 @@
-# Etapa 1: Construcción de la aplicación
-FROM eclipse-temurin:17-jdk AS build
+# Imagen base con Java 17
+FROM openjdk:17-jdk-slim
+
+# Directorio de trabajo dentro del contenedor
 WORKDIR /app
 
-# Copiar los archivos necesarios
-COPY . .
+# Copiar el archivo JAR generado por Gradle o Maven
+COPY build/libs/mediciones-api-0.0.1.jar app.jar
 
-# Dar permisos al script de Gradle si no los tiene
-RUN chmod +x gradlew
+# Habilitar perfil de producción
+ENV SPRING_PROFILES_ACTIVE=prod
 
-# Compilar el proyecto, omitiendo los tests
-RUN ./gradlew clean build -x test
-
-# Etapa 2: Imagen final
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
-
-# Copiar el JAR generado desde la etapa anterior
-#COPY --from=build /app/build/libs/*.jar app.jar
-
-COPY --from=build /app/build/libs/measure-backend-0.0.1-SNAPSHOT.jar app.jar
-
-
-# Puerto expuesto (Railway detecta automáticamente, pero puedes incluirlo)
+# Expone el puerto que Spring Boot usará internamente
 EXPOSE 8080
 
-# Comando de arranque
+# Ejecuta la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]
