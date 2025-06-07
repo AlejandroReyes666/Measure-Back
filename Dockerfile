@@ -1,17 +1,12 @@
-# Imagen base con Java 17
+# Etapa 1: Construcción del .jar usando Gradle
+FROM gradle:8.7.0-jdk17 AS builder
+COPY --chown=gradle:gradle . /home/gradle/project
+WORKDIR /home/gradle/project
+RUN gradle build -x test
+
+# Etapa 2: Imagen ligera para producción
 FROM openjdk:17-jdk-slim
-
-# Directorio de trabajo dentro del contenedor
 WORKDIR /app
-
-# Copiar el archivo JAR generado por Gradle o Maven
-COPY build/libs/mediciones-api-0.0.1.jar app.jar
-
-# Habilitar perfil de producción
-ENV SPRING_PROFILES_ACTIVE=prod
-
-# Expone el puerto que Spring Boot usará internamente
+COPY --from=builder /home/gradle/project/build/libs/*.jar app.jar
 EXPOSE 8080
-
-# Ejecuta la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
