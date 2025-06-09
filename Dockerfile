@@ -8,7 +8,12 @@ RUN gradle build --no-daemon -x test
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /home/gradle/project/build/libs/*.jar app.jar
+COPY jvm.options /app/jvm.options
+
+# Variables de entorno
+ENV SPRING_PROFILES_ACTIVE=prod
+
 EXPOSE 8080
 
-# Usar perfil de producción por defecto
-ENV SPRING_PROFILES_ACTIVE=prod
+# Ejecutar con archivo de opciones JVM
+CMD ["java", "@jvm.options", "-jar", "app.jar"]
