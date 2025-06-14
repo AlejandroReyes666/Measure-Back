@@ -1,4 +1,5 @@
 # Etapa 1: Construcción del .jar usando Gradle
+#cambios en el docker para limpiar cache
 FROM gradle:8.7.0-jdk17 AS builder
 COPY --chown=gradle:gradle . /home/gradle/project
 WORKDIR /home/gradle/project
